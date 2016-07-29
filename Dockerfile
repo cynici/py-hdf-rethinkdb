@@ -37,6 +37,10 @@ RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list \
  && pip install rethinkdb \
  && pip install shapely \
  && pip install pika \
+ && apt-get -y install libgrib-api-dev \
+ && pip install pygrib
+
+RUN echo \
  && curl -o /tmp/spatialindex.tgz http://download.osgeo.org/libspatialindex/spatialindex-src-${SPATIALINDEX_VER}.tar.gz \
  && tar -C /tmp -zxf /tmp/spatialindex.tgz \
  && cd /tmp/spatialindex-src-${SPATIALINDEX_VER} \

@@ -1,1 +1,1 @@
-# Common Python geoprocessing libraries and PostgreSQL client
+# Python geoprocessing libraries, RethinkDB driver, Pika and PostgreSQL client
