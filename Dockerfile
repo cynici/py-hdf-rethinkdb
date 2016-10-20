@@ -1,9 +1,9 @@
 FROM ubuntu:trusty
 MAINTAINER Cheewai Lai <clai@csir.co.za>
 
-ARG GOSU_VERSION=1.9
+ARG GOSU_VERSION=1.10
 ARG GOSU_DOWNLOAD_URL="https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64"
-ARG S6_OVERLAY_VERSION=v1.17.2.0
+ARG S6_OVERLAY_VERSION=v1.18.1.5
 ARG DEBIAN_FRONTEND=noninteractive
 
 # For PyHDF compilation
@@ -14,6 +14,8 @@ ARG NOSZIP=1
 
 # For libspatialindex, rtree
 ARG SPATIALINDEX_VER=1.8.5
+
+ARG LIBGEOS_VER=3.4.2
 
 # For sklearn.cluster: python-numpy libatlas-dev libatlas3gf-base
 # For scipy: liblapack3gf liblapack-dev gfortran
@@ -29,7 +31,7 @@ RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list \
  && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
  && easy_install pip \
  && pip install --upgrade pip \
- && apt-get install -y python-numpy python-tables liblapack3gf liblapack-dev gfortran python-psycopg2 libgeos-3.4.2 libgeos-dev python-yaml python-gdal libgdal1h gdal-bin \
+ && apt-get install -y python-numpy python-tables liblapack3gf liblapack-dev gfortran python-psycopg2 libgeos-${LIBGEOS_VER} libgeos-dev python-yaml python-gdal libgdal1h gdal-bin \
  && pip install pyproj \
  && pip install pytest \
  && pip install python-logstash \
