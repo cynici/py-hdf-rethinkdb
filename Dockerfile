@@ -50,6 +50,7 @@ RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list \
  && ldconfig \
  && pip install --upgrade rtree \
  && pip install dateutils \
+ && pip install raven --upgrade \
  && apt-get -y install libhdf4-dev \
  && curl -o /tmp/pyhdf.tgz -fsSL $PYHDF_URL \
  && cd /tmp \
