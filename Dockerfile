@@ -1,10 +1,11 @@
 FROM ubuntu:xenial
-MAINTAINER Cheewai Lai <clai@csir.co.za>
+LABEL maintainer "Cheewai Lai <clai@csir.co.za>"
 
 ARG GOSU_VERSION=1.10
 ARG GOSU_DOWNLOAD_URL="https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64"
 ARG S6_OVERLAY_VERSION=v1.20.0.0
 ARG DEBIAN_FRONTEND=noninteractive
+ARG DOCKERIZE_VERSION=v0.5.0
 
 # For PyHDF compilation
 ARG PYHDF_VERSION=0.9.0
@@ -30,6 +31,7 @@ RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list \
  && mv gosu /usr/bin/gosu \
  && chmod +x /usr/bin/gosu \
  && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
+ && curl -k -fsSL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xfz - -C /usr/bin \
  && easy_install pip \
  && pip install --upgrade pip \
  && apt-get install -y python-numpy python-tables liblapack3 liblapack-dev gfortran python-psycopg2 libgeos-${LIBGEOS_VER} libgeos-dev python-yaml python-gdal libgdal1i gdal-bin \
@@ -42,7 +44,9 @@ RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list \
  && pip install pika \
  && apt-get -y install libgrib-api-dev \
  && pip install pygrib \
- && curl -o /tmp/spatialindex.tgz http://download.osgeo.org/libspatialindex/spatialindex-src-${SPATIALINDEX_VER}.tar.gz \
+ && ldconfig
+
+RUN curl -o /tmp/spatialindex.tgz http://download.osgeo.org/libspatialindex/spatialindex-src-${SPATIALINDEX_VER}.tar.gz \
  && tar -C /tmp -zxf /tmp/spatialindex.tgz \
  && cd /tmp/spatialindex-src-${SPATIALINDEX_VER} \
  && ./configure \
