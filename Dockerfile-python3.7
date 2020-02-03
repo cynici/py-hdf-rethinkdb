@@ -1,0 +1,48 @@
+# Buster default python 3.7.3
+FROM debian:buster
+LABEL maintainer "Cheewai Lai <clai@csir.co.za>"
+
+ARG GOSU_VERSION=1.11
+ARG GOSU_DOWNLOAD_URL="https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64"
+ARG S6_OVERLAY_VERSION=v1.22.1.0
+ARG DEBIAN_FRONTEND=noninteractive
+ARG DOCKERIZE_VERSION=v0.6.1
+ARG http_proxy
+ARG http_proxys
+
+# For PyHDF compilation
+ARG PYHDF_VERSION=0.9.0
+ARG PYHDF_URL=http://hdfeos.org/software/pyhdf/pyhdf-${PYHDF_VERSION}.tar.gz
+ARG INCLUDE_DIRS=/usr/include/hdf
+ARG NOSZIP=1
+
+# For libspatialindex, rtree
+ARG SPATIALINDEX_VER=1.8.5
+
+#2017-09-27 ARG LIBGEOS_VER=3.4.2
+ARG LIBGEOS_VER=3.7.1
+
+# For sklearn.cluster: python-numpy libatlas-dev libatlas3gf-base
+# For scipy: liblapack3gf liblapack-dev gfortran
+# For Python script to interact with Postgis database: python-psycopg2 libgeos-3.4.2 libgeos-dev
+RUN apt-get update \
+ && apt-get -y upgrade \
+ && apt-get install -y curl wget unzip build-essential git python3 python3-dev python3-setuptools python3-pip bzip2 jq \
+ && curl -o gosu -fsSL "$GOSU_DOWNLOAD_URL" > gosu-amd64 \
+ && mv gosu /usr/bin/gosu \
+ && chmod +x /usr/bin/gosu \
+ && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
+ && curl -k -fsSL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xfz - -C /usr/bin \
+ && apt-get install -y python3-numpy python3-tables liblapack3 liblapack-dev gfortran python3-psycopg2 libgeos-${LIBGEOS_VER} libgeos-dev python3-yaml python3-gdal libgdal20 gdal-bin libspatialindex-c5 libhdf4-0 libhdf4-dev python3-pyproj python3-pytest python3-shapely python3-rtree libeccodes-dev python3-grib \
+ && pip3 install python-logstash \
+ && pip3 install rethinkdb \
+ && pip3 install pika \
+ && pip3 install dateutils blinker raven \
+ && pip3 install pyhdf \
+ && ldconfig \
+ && apt-get -y autoremove \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod 755 /docker-entrypoint.sh \
+ && chown root.root /docker-entrypoint.sh
