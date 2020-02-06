@@ -33,12 +33,13 @@ RUN apt-get update \
  && chmod +x /usr/bin/gosu \
  && curl -sSL https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-amd64.tar.gz | tar xfz - -C / \
  && curl -k -fsSL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xfz - -C /usr/bin \
- && apt-get install -y python3-numpy python3-tables liblapack3 liblapack-dev gfortran python3-psycopg2 libgeos-${LIBGEOS_VER} libgeos-dev python3-yaml python3-gdal libgdal20 gdal-bin libspatialindex-c5 libhdf4-0 libhdf4-dev python3-pyproj python3-pytest python3-shapely python3-rtree libeccodes-dev python3-grib \
+ && apt-get install -y python3-numpy python3-tables liblapack3 liblapack-dev gfortran python3-psycopg2 libgeos-${LIBGEOS_VER} libgeos-dev python3-gdal libgdal20 gdal-bin libspatialindex-c5 libhdf4-0 libhdf4-dev python3-pyproj python3-pytest python3-shapely python3-rtree libeccodes-dev python3-grib \
  && pip3 install python-logstash \
  && pip3 install rethinkdb \
  && pip3 install pika \
  && pip3 install dateutils blinker raven \
  && pip3 install pyhdf \
+ && pip3 install PyYAML \
  && ldconfig \
  && apt-get -y autoremove \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
